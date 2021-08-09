@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+
+
+const appBackground = require('../assets/pic.png');
 
 export default class Start extends React.Component {
 
@@ -16,46 +19,51 @@ export default class Start extends React.Component {
 
     render() {
         return (
-            <View style={styles.homeScreen}>
-                <Text style={styles.title}>Chat App</Text>
-                <View style={styles.userBox}>
-                    <View>
-                        {/* styles text input */}
-                        <TextInput
-                            style={styles.textInput}
-                            onChangeText={(name) => this.setState({ name })}
-                            value={this.state.name}
-                            placeholder='Type your name'
-                            placeholderTextColor='purple'
+            <ImageBackground
+                source={appBackground}
+                style={styles.appBackground}
+            >
+                <View style={styles.homeScreen}>
+                    <Text style={styles.title}>Chat App</Text>
+                    <View style={styles.userBox}>
+                        <View>
+                            {/* styles text input */}
+                            <TextInput
+                                style={styles.textInput}
+                                onChangeText={(name) => this.setState({ name })}
+                                value={this.state.name}
+                                placeholder='Type your name'
+                                placeholderTextColor='purple'
+                            />
+                        </View>
+                        {/* styles buttons to change color of background on chat screen */}
+                        <View style={styles.colors}>
+                            <TouchableOpacity
+                                style={styles.color1}
+                                onPress={() => this.setState({ setColor: 'yellow' })}
+                            />
+                            <TouchableOpacity
+                                style={styles.color2}
+                                onPress={() => this.setState({ setColor: 'blue' })}
+                            />
+                            <TouchableOpacity
+                                style={styles.color3}
+                                onPress={() => this.setState({ setColor: 'black' })}
+                            />
+                            <TouchableOpacity
+                                style={styles.color4}
+                                onPress={() => this.setState({ setColor: 'orange' })}
+                            />
+                        </View>
+                        {/*brings us to chat room*/}
+                        <Button
+                            title='Go to Chat'
+                            style={styles.buttonTheme, { backgroundColor: this.state.setColor }}
+                            onPress={() => this.props.navigation.navigate('Chat', { name: this.state.name, setColor: this.state.setColor })}
                         />
                     </View>
-                    {/* styles buttons to change color of background on chat screen */}
-                    <View style={styles.colors}>
-                        <TouchableOpacity
-                            style={styles.color1}
-                            onPress={() => this.setState({ setColor: 'yellow' })}
-                        />
-                        <TouchableOpacity
-                            style={styles.color2}
-                            onPress={() => this.setState({ setColor: 'blue' })}
-                        />
-                        <TouchableOpacity
-                            style={styles.color3}
-                            onPress={() => this.setState({ setColor: 'black' })}
-                        />
-                        <TouchableOpacity
-                            style={styles.color4}
-                            onPress={() => this.setState({ setColor: 'orange' })}
-                        />
-                    </View>
-                    {/*brings us to chat room*/}
-                    <Button
-                        title='Go to Chat'
-                        style={styles.buttonTheme, { backgroundColor: this.state.setColor }}
-                        onPress={() => this.props.navigation.navigate('Chat', { name: this.state.name, setColor: this.state.setColor })}
-                    />
                 </View>
-            </View>
+            </ImageBackground>
         )
     }
 }
@@ -64,18 +72,19 @@ export default class Start extends React.Component {
 const styles = StyleSheet.create({
     homeScreen: {
         flex: 1,
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         color: 'black',
         fontWeight: 'bold',
-        backgroundColor: 'indigo',
+        textAlign: 'center'
     },
     textInput: {
-        height: 80,
+        height: 40,
         borderColor: 'black',
         borderWidth: 1,
         margin: '10%',
-        padding: '10%',
+        textAlign: 'center',
         fontSize: 16,
         fontWeight: '300',
         opacity: .5
@@ -133,6 +142,11 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 25
+    },
+
+    appBackground: {
+        flex: 1,
+        justifyContent: 'center'
     }
 
 })
