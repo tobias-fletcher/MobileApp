@@ -58,13 +58,13 @@ export default class Start extends React.Component {
                         {/*brings us to chat room*/}
                         <Button
                             title='Go to Chat'
-                            style={styles.buttonTheme, { backgroundColor: this.state.setColor }}
+                            style={(styles.buttonTheme, { backgroundColor: this.state.setColor })}
                             onPress={() => this.props.navigation.navigate('Chat', { name: this.state.name, setColor: this.state.setColor })}
                         />
                     </View>
                 </View>
             </ImageBackground>
-        )
+        );
     }
 }
 

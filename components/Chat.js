@@ -10,6 +10,9 @@ import { NetInfoCellularGeneration } from "@react-native-community/netinfo";
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import '@firebase/util';
+import '@firebase/logger';
+import '@firebase/webchannel-wrapper';
 
 const Stack = createStackNavigator();
 
@@ -70,7 +73,7 @@ export default class App extends React.Component {
     async getMessages() {
         let messages = '';
         try {
-            messages = await AsyncStorage.getItem('messages') || [];
+            messages = (await AsyncStorage.getItem('messages')) || [];
             this.setState({
                 messages: JSON.parse(messages)
             });
@@ -157,9 +160,7 @@ export default class App extends React.Component {
                     renderInputToolbar={this.renderInputToolbar.bind(this)}
                     messages={this.state.messages}
                     onSend={messages => this.onSend(messages)}
-                    user={{
-                        _id: 1,
-                    }}
+                    user={this.state.user}
                 />
                 {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
             </View>
@@ -181,7 +182,10 @@ export default class App extends React.Component {
                     this.setState({
                         uid: user.uid,
                         messages: [],
-                        loggedInText: 'Connected'
+                        loggedInText: 'Connected',
+                        user: {
+                            _id: user.uid,
+                        }
                     });
                     this.referenceMessagesUser = firebase.firestore().collection('messages').where('uid', '==', this.state.uid);
                     this.unsubscribe = this.referenceChatMessages.orderBy("createdAt", "desc").onSnapshot(this.onCollectionUpdate);
