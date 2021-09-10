@@ -9,7 +9,11 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NetInfoCellularGeneration } from "@react-native-community/netinfo";
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import CustomActions from './CustomActions';
+import * as ImagePicker from 'expo-image-picker';
+import * as Camera from 'expo-camera';
+import MapView from 'react-native-maps';
+import * as Location from 'expo-location'
 import '@firebase/util';
 import '@firebase/logger';
 import '@firebase/webchannel-wrapper';
@@ -29,6 +33,8 @@ export default class App extends React.Component {
             uid: 0,
             loggedInText: 'Not Connected',
             isConnected: false,
+            location: null,
+            image: null
         }
 
         const firebaseConfig = {
@@ -50,16 +56,17 @@ export default class App extends React.Component {
 
 
 
-    addMessages() {
+    async addMessages() {
         const message = this.state.messages[0];
-        // add a new messages to the collection
         this.referenceChatMessages.add({
-            uid: this.state.uid,
             _id: message._id,
             createdAt: message.createdAt,
+            image: message.image || null,
+            location: message.location || null,
             text: message.text || null,
             user: message.user,
-        });
+
+        })
     }
 
     async saveMessages() {
@@ -85,6 +92,9 @@ export default class App extends React.Component {
     async deleteMessages() {
         try {
             await AsyncStorage.removeItem('messages');
+            this.setState({
+                messages: []
+            })
         } catch (error) {
             console.log(error.message);
         }
@@ -104,6 +114,8 @@ export default class App extends React.Component {
                     _id: data.user._id,
                     name: data.user.name,
                 },
+                image: data.image || null,
+                location: data.location || null
             });
         });
         this.setState({
@@ -147,6 +159,32 @@ export default class App extends React.Component {
         }
     }
 
+    renderCustomActions = (props) => {
+        return <CustomActions {...props} />;
+    };
+
+    renderCustomView(props) {
+        const { currentMessage } = props;
+        if (currentMessage.location) {
+            return (
+                <MapView
+                    style={{
+                        width: 150,
+                        height: 100,
+                        borderRadius: 13,
+                        margin: 3
+                    }}
+                    region={{
+                        latitude: currentMessage.location.latitude,
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                />
+            );
+        }
+        return null;
+    }
     render() {
 
         let name = this.props.route.params.name;
@@ -158,6 +196,10 @@ export default class App extends React.Component {
                 <GiftedChat
                     renderBubble={this.renderBubble.bind(this)}
                     renderInputToolbar={this.renderInputToolbar.bind(this)}
+                    renderActions={this.renderCustomActions}
+                    renderCustomView={this.renderCustomView}
+                    showUserAvatar={true}
+                    renderAvatarOnTop={true}
                     messages={this.state.messages}
                     onSend={messages => this.onSend(messages)}
                     user={this.state.user}
@@ -185,6 +227,13 @@ export default class App extends React.Component {
                         loggedInText: 'Connected',
                         user: {
                             _id: user.uid,
+                            name: 'React',
+                            avatar: 'https://placeimg.com/140/140/any'
+                        },
+                        image: this.state.image,
+                        location: {
+                            longitude: 11.5249684,
+                            latitude: 48.0643933,
                         }
                     });
                     this.referenceMessagesUser = firebase.firestore().collection('messages').where('uid', '==', this.state.uid);
