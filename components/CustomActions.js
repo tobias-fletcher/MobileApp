@@ -6,12 +6,10 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Camera from 'expo-camera';
 import * as Permssions from 'expo-permissions';
 import MapView from 'react-native-maps';
-/*const firebase = require("firebase");
+const firebase = require("firebase");
 // Required for side-effects
-require("firebase/firestore");*/
+require("firebase/firestore");
 
-import firebase from 'firebase';
-import firestore from 'firebase';
 
 export default class CustomActions extends React.Component {
 
@@ -34,7 +32,7 @@ export default class CustomActions extends React.Component {
                 }).catch((error) => console.log(error));
                 if (!result.cancelled) {
                     const imageUrl = await this.uploadImageFetch(result.uri);
-                    console.log(imageUrl);
+
                     this.props.onSend({ image: imageUrl });
                 }
             }
@@ -59,31 +57,91 @@ export default class CustomActions extends React.Component {
     }
 
 
-    uploadImageFetch = async (uri) => {
-        console.log('in upload');
-        try {
-            const blob = await new Promise((resolve, reject) => {
+    /*uriToBlob = (uri) => {
+        console.log('uri: ' + uri)
+        return new Promise(function (resolve, reject) {
+            try {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
                     resolve(xhr.response);
                 };
                 xhr.onerror = function (e) {
                     console.log(e);
-                    reject(new TypeError("Network request failed"));
+                    reject(new TypeError('Network request failed'));
                 };
-                xhr.responseType = "blob";
-                xhr.open("GET", uri, true);
+                xhr.responseType = 'blob';
+                xhr.open('GET', uri, true);
                 xhr.send(null);
-            });
 
-            const imageNameBefore = uri.split("/");
-            const imageName = imageNameBefore[imageNameBefore.length - 1];
-            const ref = firebase.storage().ref().child(`images/${imageName}`);
-            const snapshot = await ref.put(blob);
-            blob.close();
-            return await snapshot.ref.getDownloadURL();
-        } catch (error) { console.log(error.message) }
+            }
+            catch (err) { reject(err.message) }
+        })
     }
+
+    uploadToFirebase = (blob) => {
+        console.log('uploading to firebase')
+        return new Promise((resolve, reject) => {
+            var storageRef = firebase.storage().ref();
+            storageRef.child('uploads/photo.jpg').put(blob, {
+                contentType: 'blob'
+            }).then((snapshot) => {
+                blob.close();
+                resolve(snapshot);
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    }
+
+    uploadImageFetch = async (uri) => {
+        this.uriToBlob(uri).then((blob) => {
+            return this.uploadToFirebase(blob);
+        })
+    }
+
+    /* uploadImageFetch = async (uri) => {
+         const imageNameBefore = uri.split("/");
+         const imageName = imageNameBefore[imageNameBefore.length - 1];
+         const storage = getStorage();
+         getDownloadURL(ref(storage, `images/${imageName}`))
+             .then((url) => {
+                 const xhr = new XMLHttpRequest();
+                 xhr.responseType = 'blob';
+                 xhr.onload = (event) => {
+                     const blob = xhr.response;
+                 };
+                 xhr.open('GET', url);
+                 xhr.send();
+             })
+     }*/
+
+
+    uploadImageFetch = async (uri) => {
+        const blob = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                resolve(xhr.response);
+            };
+            xhr.onerror = function (e) {
+                console.log(e);
+                reject(new TypeError('Network request failed'));
+            };
+            xhr.responseType = 'blob';
+            xhr.open('GET', uri, true);
+            xhr.send(null);
+        });
+        const imageNameBefore = uri.split("/");
+        const imageName = imageNameBefore[imageNameBefore.length - 1];
+
+        const ref = firebase.storage().ref().child(`${imageName}`);
+
+        const snapshot = await ref.put(blob);
+
+        blob.close();
+
+        return await snapshot.ref.getDownloadURL();
+    }
+
 
     getLocation = async () => {
         try {
@@ -136,7 +194,12 @@ export default class CustomActions extends React.Component {
 
     render() {
         return (
-            <TouchableOpacity style={[styles.container]} onPress={this.onActionPress}>
+            <TouchableOpacity
+                accessibile={true}
+                accessibilityLabel="More options"
+                accessibilityHint="Let's you choose to send a photo or your location"
+                style={[styles.container]}
+                onPress={this.onActionPress}>
                 <View style={[styles.wrapper, this.props.wrapperStyle]}>
                     <Text style={[styles.iconText, this.props.iconTextStyle]}>+</Text>
                 </View>

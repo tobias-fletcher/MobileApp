@@ -17,7 +17,7 @@ import * as Location from 'expo-location'
 import '@firebase/util';
 import '@firebase/logger';
 import '@firebase/webchannel-wrapper';
-
+import 'firebase/storage';
 const Stack = createStackNavigator();
 
 const firebase = require('firebase');
@@ -37,7 +37,7 @@ export default class App extends React.Component {
             image: null,
             user: {
                 _id: '',
-                name: ''
+                name: '',
             }
         }
 
@@ -54,6 +54,7 @@ export default class App extends React.Component {
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
+
         this.referenceChatMessages = firebase.firestore().collection('messages');
         this.referenceMessageUser = null;
     }
@@ -192,7 +193,7 @@ export default class App extends React.Component {
     render() {
 
         let name = this.props.route.params.name;
-        this.props.navigation.setOptions({ title: name });
+        this.props.navigation.setOptions({ title: name })
 
         return (
             <View style={{ flex: 1, backgroundColor: this.props.route.params.setColor }}>
@@ -202,12 +203,12 @@ export default class App extends React.Component {
                     renderInputToolbar={this.renderInputToolbar.bind(this)}
                     renderActions={this.renderCustomActions}
                     renderCustomView={this.renderCustomView}
-                    showUserAvatar={true}
-                    renderAvatarOnTop={true}
                     messages={this.state.messages}
                     onSend={messages => this.onSend(messages)}
                     user={this.state.user}
                 />
+                {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior="height" /> : null}
+
                 {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
             </View>
         );
@@ -232,9 +233,7 @@ export default class App extends React.Component {
                         user: {
                             _id: user.uid,
                             name: 'React',
-                            avatar: 'https://placeimg.com/140/140/any'
                         },
-                        image: this.state.image,
                         location: {
                             longitude: 11.5249684,
                             latitude: 48.0643933,
