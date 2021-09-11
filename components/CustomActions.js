@@ -6,9 +6,13 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Camera from 'expo-camera';
 import * as Permssions from 'expo-permissions';
 import MapView from 'react-native-maps';
-const firebase = require("firebase");
+/*const firebase = require("firebase");
 // Required for side-effects
-require("firebase/firestore");
+require("firebase/firestore");*/
+
+import firebase from 'firebase';
+import firestore from 'firebase';
+
 export default class CustomActions extends React.Component {
 
     constructor() {
@@ -25,12 +29,12 @@ export default class CustomActions extends React.Component {
             if (status === "granted") {
                 const result = await ImagePicker.launchImageLibraryAsync({
                     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                    allowsEditing: true,
-                    aspect: [4, 3],
+                    allowsEditing: false,
                     quality: 1,
                 }).catch((error) => console.log(error));
                 if (!result.cancelled) {
                     const imageUrl = await this.uploadImageFetch(result.uri);
+                    console.log(imageUrl);
                     this.props.onSend({ image: imageUrl });
                 }
             }
@@ -57,31 +61,30 @@ export default class CustomActions extends React.Component {
 
     uploadImageFetch = async (uri) => {
         console.log('in upload');
-        const blob = await new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = function () {
-                resolve(xhr.response);
-            };
-            xhr.onerror = function (e) {
-                console.log(e);
-                reject(new TypeError("Network request failed"));
-            };
-            xhr.responseType = "blob";
-            xhr.open("GET", uri, true);
-            xhr.send(null);
-        });
+        try {
+            const blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function (e) {
+                    console.log(e);
+                    reject(new TypeError("Network request failed"));
+                };
+                xhr.responseType = "blob";
+                xhr.open("GET", uri, true);
+                xhr.send(null);
+            });
 
-        const imageNameBefore = uri.split("/");
-        const imageName = imageNameBefore[imageNameBefore.length - 1];
+            const imageNameBefore = uri.split("/");
+            const imageName = imageNameBefore[imageNameBefore.length - 1];
+            const ref = firebase.storage().ref().child(`images/${imageName}`);
+            const snapshot = await ref.put(blob);
+            blob.close();
+            return await snapshot.ref.getDownloadURL();
+        } catch (error) { console.log(error.message) }
+    }
 
-        const ref = firebase.storage().ref().child(`images/${imageName}`);
-
-        const snapshot = await ref.put(blob);
-
-        blob.close();
-
-        return await snapshot.ref.getDownloadURL();
-    };
     getLocation = async () => {
         try {
             const { status } = await Location.requestForegroundPermissionsAsync();

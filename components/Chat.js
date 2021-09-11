@@ -34,7 +34,11 @@ export default class App extends React.Component {
             loggedInText: 'Not Connected',
             isConnected: false,
             location: null,
-            image: null
+            image: null,
+            user: {
+                _id: '',
+                name: ''
+            }
         }
 
         const firebaseConfig = {
