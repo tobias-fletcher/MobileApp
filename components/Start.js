@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 
 
-const appBackground = require('../assets/pic.png');
+/*const appBackground = require('../assets/pic.png');*/
 
 export default class Start extends React.Component {
 
@@ -19,10 +19,10 @@ export default class Start extends React.Component {
 
     render() {
         return (
-            <ImageBackground
-                source={appBackground}
+            <View
                 style={styles.appBackground}
             >
+
                 <View style={styles.homeScreen}>
                     <Text style={styles.title}>Chat App</Text>
                     <View style={styles.userBox}>
@@ -40,30 +40,31 @@ export default class Start extends React.Component {
                         <View style={styles.colors}>
                             <TouchableOpacity
                                 style={styles.color1}
-                                onPress={() => this.setState({ setColor: 'yellow' })}
+                                onPress={() => this.setState({ setColor: '#716C7C' })}
                             />
                             <TouchableOpacity
                                 style={styles.color2}
-                                onPress={() => this.setState({ setColor: 'blue' })}
+                                onPress={() => this.setState({ setColor: '#8771B6' })}
                             />
                             <TouchableOpacity
                                 style={styles.color3}
-                                onPress={() => this.setState({ setColor: 'black' })}
+                                onPress={() => this.setState({ setColor: '#5A2AC0' })}
                             />
                             <TouchableOpacity
                                 style={styles.color4}
-                                onPress={() => this.setState({ setColor: 'orange' })}
+                                onPress={() => this.setState({ setColor: '#2F1566' })}
                             />
                         </View>
                         {/*brings us to chat room*/}
                         <Button
                             title='Go to Chat'
+                            color="#4B3089"
                             style={(styles.buttonTheme, { backgroundColor: this.state.setColor })}
                             onPress={() => this.props.navigation.navigate('Chat', { name: this.state.name, setColor: this.state.setColor })}
                         />
                     </View>
                 </View>
-            </ImageBackground>
+            </View>
         );
     }
 }
@@ -87,14 +88,19 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         fontWeight: '300',
-        opacity: .5
+        opacity: .5,
+        color: 'black'
     },
     userBox: {
         borderStyle: 'solid',
         color: 'black',
-        backgroundColor: 'white',
+        backgroundColor: '#9C8DBE',
         height: '50%',
-        width: '80%'
+        width: '80%',
+        opacity: 1,
+        borderRadius: 65,
+        padding: '10%',
+
 
     },
     title: {
@@ -116,37 +122,47 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         margin: '10%',
+        justifyContent: 'center'
     },
     color1: {
-        backgroundColor: 'yellow',
+        backgroundColor: '#716C7C',
         width: 50,
         height: 50,
+        margin: '2%',
         borderRadius: 25,
+        opacity: 1
     },
 
     color2: {
-        backgroundColor: 'blue',
+        backgroundColor: '#8771B6',
         width: 50,
         height: 50,
-        borderRadius: 25
+        borderRadius: 25,
+        opacity: 1,
+        margin: '2%',
     },
     color3: {
-        backgroundColor: 'black',
+        backgroundColor: '#5A2AC0',
         width: 50,
         height: 50,
-        borderRadius: 25
+        borderRadius: 25,
+        opacity: 1,
+        margin: '2%',
     },
 
     color4: {
-        backgroundColor: 'orange',
+        backgroundColor: '#2F1566',
         width: 50,
         height: 50,
-        borderRadius: 25
+        borderRadius: 25,
+        opacity: 1,
+        margin: '2%',
     },
 
     appBackground: {
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: '#0C051B',
     }
 
 })

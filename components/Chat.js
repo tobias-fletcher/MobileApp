@@ -133,9 +133,11 @@ export default class App extends React.Component {
             wrapperStyle={{
                 left: {
                     backgroundColor: 'white',
+                    color: 'white'
                 },
                 right: {
-                    backgroundColor: 'blue'
+                    backgroundColor: '#030107',
+                    color: 'black'
                 }
             }} />
         )
