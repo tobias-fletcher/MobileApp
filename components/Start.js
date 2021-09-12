@@ -26,15 +26,10 @@ export default class Start extends React.Component {
                 <View style={styles.homeScreen}>
                     <Text style={styles.title}>Chat App</Text>
                     <View style={styles.userBox}>
+
                         <View>
-                            {/* styles text input */}
-                            <TextInput
-                                style={styles.textInput}
-                                onChangeText={(name) => this.setState({ name })}
-                                value={this.state.name}
-                                placeholder='Type your name'
-                                placeholderTextColor='purple'
-                            />
+                            <Text
+                                style={styles.text}>Choose background color</Text>
                         </View>
                         {/* styles buttons to change color of background on chat screen */}
                         <View style={styles.colors}>
@@ -55,14 +50,25 @@ export default class Start extends React.Component {
                                 onPress={() => this.setState({ setColor: '#2F1566' })}
                             />
                         </View>
+                        <View>
+                            {/* styles text input */}
+                            <TextInput
+                                style={styles.textInput}
+                                onChangeText={(name) => this.setState({ name })}
+                                value={this.state.name}
+                                placeholder='Type your name'
+                                placeholderTextColor='purple'
+                            />
+                        </View>
                         {/*brings us to chat room*/}
-                        <Button
-                            title='Go to Chat'
-                            color="#4B3089"
-                            style={(styles.buttonTheme, { backgroundColor: this.state.setColor })}
-                            onPress={() => this.props.navigation.navigate('Chat', { name: this.state.name, setColor: this.state.setColor })}
-                        />
+
                     </View>
+                    <Button
+                        title='Enter Chat Room'
+                        color="white"
+                        style={(styles.buttonTheme, { backgroundColor: this.state.setColor })}
+                        onPress={() => this.props.navigation.navigate('Chat', { name: this.state.name, setColor: this.state.setColor })}
+                    />
                 </View>
             </View>
         );
@@ -80,6 +86,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
+    text: {
+        textAlign: 'center',
+        color: 'black',
+        fontWeight: '300',
+    },
     textInput: {
         height: 40,
         borderColor: 'black',
@@ -89,17 +100,19 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '300',
         opacity: .5,
-        color: 'black'
+        color: 'black',
     },
     userBox: {
         borderStyle: 'solid',
         color: 'black',
         backgroundColor: '#9C8DBE',
-        height: '50%',
+        height: '40%',
         width: '80%',
         opacity: 1,
         borderRadius: 65,
         padding: '10%',
+        justifyContent: 'center',
+        marginBottom: '20%'
 
 
     },
