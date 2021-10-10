@@ -1,23 +1,25 @@
 import React, { Component } from "react";
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import "react-native-gesture-handler";
-import { View, Platform, KeyboardAvoidingView, Button, Flatlist, Text } from 'react-native';
-
+import { View, Platform, KeyboardAvoidingView, Text, LogBox } from 'react-native';
 // import react Navigation
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NetInfoCellularGeneration } from "@react-native-community/netinfo";
+
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomActions from './CustomActions';
-import * as ImagePicker from 'expo-image-picker';
-import * as Camera from 'expo-camera';
 import MapView from 'react-native-maps';
-import * as Location from 'expo-location'
+
 import '@firebase/util';
 import '@firebase/logger';
 import '@firebase/webchannel-wrapper';
 import 'firebase/storage';
+
+
+
+// Ignore all log notifications:
+LogBox.ignoreAllLogs();
+
 const Stack = createStackNavigator();
 
 const firebase = require('firebase');

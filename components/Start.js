@@ -2,8 +2,6 @@ import React from 'react';
 import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 
 
-/*const appBackground = require('../assets/pic.png');*/
-
 export default class Start extends React.Component {
 
     constructor(props) {
