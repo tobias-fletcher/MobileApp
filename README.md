@@ -1,5 +1,8 @@
 # Mobile Chat App
 
+
+
+
 # Objective
 To build a chat app for mobile devices using React Native. The app will
 provide users with a chat interface and options to share images and their
@@ -38,3 +41,7 @@ and location data.
 * ## Set up an Expo account using Expo documentation.
 * ## Run using exop
 > **expo start**
+
+
+![](/assets/readme.image3.png)
+![](/assets/readme.image2.png)
